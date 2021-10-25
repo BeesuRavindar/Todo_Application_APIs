@@ -262,9 +262,9 @@ app.get("/agenda/", async (request, response) => {
     response.status(400);
     response.send("Invalid Due Date");
   } else {
-    const formattedDate = format(new Date(date), "yyyy-MM-dd");
-    const isValidDate = isValid(new Date(formattedDate));
+    const isValidDate = isValid(new Date(date));
     if (isValidDate) {
+      const formattedDate = format(new Date(date), "yyyy-MM-dd");
       const getTodosQuery = `
       SELECT * FROM todo WHERE due_date = '${formattedDate}';
       `;
@@ -288,9 +288,8 @@ app.post("/todos/", async (request, response) => {
     priority === "HIGH" || priority === "LOW" || priority === "MEDIUM";
   const isValidStatus =
     status === "TO DO" || status === "DONE" || status === "IN PROGRESS";
+  const isValidDate = isValid(new Date(dueDate));
   const formattedDate = format(new Date(dueDate), "yyyy-MM-dd");
-  const isValidDate = isValid(new Date(formattedDate));
-
   switch (true) {
     case !isValidPriority:
       response.status(400);
@@ -375,10 +374,10 @@ app.put("/todos/:todoId/", async (request, response) => {
       }
       break;
     case dueDate !== undefined:
-      const formattedDate = format(new Date(dueDate), "yyyy-MM-dd");
-      const isValidDate = isValid(new Date(formattedDate));
+      const isValidDate = isValid(new Date(dueDate));
 
       if (isValidDate) {
+        const formattedDate = format(new Date(dueDate), "yyyy-MM-dd");
         const updateTodoQuery = `
             UPDATE todo
             SET due_date = '${formattedDate}'
